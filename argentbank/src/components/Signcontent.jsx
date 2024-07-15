@@ -1,32 +1,61 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login } from "../redux/action";
 
 
-function Signcontent() {
+const SignIn = () => {
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { token, error } = useSelector((state) => state.auth);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        dispatch(login({ email, password }));
+    };
+
+    React.useEffect(() => {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+            navigate("/api/v1/user");
+        }
+    }, [token, navigate]);
+
     return (
-        <div>
-            <main className="main bg-dark">
-                <section className="sign-in-content">
-                    <i className="fa fa-user-circle sign-in-icon"></i>
-                    <h1>Sign In</h1>
-                    <form>
-                        <div className="input-wrapper">
-                            <label htmlFor="username">Username</label><input type="text" id="username" />
-                        </div>
-                        <div className="input-wrapper">
-                            <label htmlFor="password">Password</label><input type="password" id="password" />
-                        </div>
-                        <div className="input-remember">
-                            <input type="checkbox" id="remember-me" /><label htmlFor="remember-me">Remember me</label>
-                        </div>
+        <main className="main bg-dark">
+            <section className="sign-in-content">
+                <i className="fa fa-user-circle sign-in-icon"></i>
+                <h1>Sign In</h1>
+                <form onSubmit={handleSubmit}>
+                    <div className="input-wrapper">
+                        <label htmlFor="username">Email</label>
+                        <input
+                            type="text"
+                            id="username"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+                    <div className="input-wrapper">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+                    <button className="sign-in-button" type="submit">
+                        Sign In
+                    </button>
+                </form>
+                {error && <p className="error-message">{error}</p>}
+                {token && <p className="success-message">Successfully connected!</p>}
+            </section>
+        </main>
+    );
+};
 
-                        <Link to="/user" className="sign-in-button">Sign In</Link>
-
-                    </form>
-                </section>
-            </main>
-        </div>
-    )
-}
-
-export default Signcontent
+export default SignIn;

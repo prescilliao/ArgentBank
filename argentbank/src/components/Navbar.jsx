@@ -1,9 +1,15 @@
 import React from 'react'
 import Logo from '../designs/img/argentBankLogo.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 function Navbar() {
+  const token = localStorage.getItem("token")
+  const navigate = useNavigate()
+  function Disconnect() {
+    localStorage.removeItem("token")
+    navigate("/")
+  }
   return (
     <div>
       <nav className="main-nav">
@@ -15,12 +21,23 @@ function Navbar() {
           />
           <h1 className="sr-only">Argent Bank</h1>
         </Link>
-        <div>
+
+        {!token ? <div>
           <Link className="main-nav-item" to="api/v1/user/login">
             <i className="fa fa-user-circle"></i>
             Sign In
           </Link>
-        </div>
+        </div> : <div>
+          <Link className="main-nav-item" to="api/v1/user">
+            <i className="fa fa-user-circle"></i>
+            Tony
+          </Link>
+          <a className="main-nav-item" onClick={() => Disconnect()}>
+            <i className="fa fa-sign-out"></i>
+            Sign Out
+          </a>
+        </div>}
+
       </nav>
     </div>
   )

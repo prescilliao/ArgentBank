@@ -6,15 +6,17 @@ import Home from "./pages/home";
 import Signin from "./pages/Signin";
 import Footer from "./components/Footer";
 import User from "./pages/User";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="api/v1/user/login" element={<Signin />} />
-          <Route path="api/v1/user/signup" element={<User />} />
+          <Route path="/api/v1/user/login" element={<Signin />} />
+          <Route path="/api/v1/user" element={<User />} />
         </Routes>
         <Footer />
       </BrowserRouter>
