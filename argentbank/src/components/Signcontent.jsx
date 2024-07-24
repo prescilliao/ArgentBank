@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { login } from "../redux/action";
+import { login, fetchProfile } from "../redux/action";
 
 
-const SignIn = () => {
+const Signcontent = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const dispatch = useDispatch();
@@ -14,14 +14,16 @@ const SignIn = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(login({ email, password }));
+
     };
 
     React.useEffect(() => {
-        const storedToken = localStorage.getItem("token");
-        if (storedToken) {
-            navigate("/api/v1/user");
+
+        if (token) {
+            dispatch(fetchProfile({ token }));
+            navigate("/user");
         }
-    }, [token, navigate]);
+    }, [token, navigate, dispatch]);
 
     return (
         <main className="main bg-dark">
@@ -58,4 +60,4 @@ const SignIn = () => {
     );
 };
 
-export default SignIn;
+export default Signcontent;
