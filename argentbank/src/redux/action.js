@@ -1,17 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const Port = "http://localhost:3001/api/v1";
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(
-        "http://localhost:3001/api/v1/user/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await axios.post(`${Port}/user/login`, {
+        email,
+        password,
+      });
 
       if (response.status === 200 && response.data.status === 200) {
         const token = response.data.body.token;
@@ -33,7 +31,7 @@ export const fetchProfile = createAsyncThunk(
   async ({ token }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:3001/api/v1/user/profile",
+        `${Port}/user/profile`,
         {},
         {
           headers: {
@@ -60,7 +58,7 @@ export const UpdateUserName = createAsyncThunk(
   async ({ userName, token }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        "http://localhost:3001/api/v1/user/profile",
+        `${Port}/user/profile`,
         { userName },
         {
           headers: {
