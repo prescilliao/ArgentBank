@@ -1,180 +1,89 @@
-# swagger: '2.0'
-# info:
-#   title: Bank Argent API documentation
-#   description: Contains all available API endpoints in this codebase
-#   version: '1.0.0'
-#   termsOfService: 'http://swagger.io/terms/'
-# host: localhost:3001
-# basePath: /api/v1
-# schemes:
-#   - http
-# paths:
-#   /user/profile:
-#     get:
-#       tags:
-#         - Account Module
-#       summary: Get all accounts
-#       description: Retrieve a list of all accounts
-#       produces:
-#         - application/json
-#       responses:
-#         '200':
-#           description: A list of accounts
-#           schema:
-#             type: array
-#             items:
-#               $ref: '#/definitions/Account'
-#         '500':
-#           description: Internal Server Error
+swagger: '2.0'
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /user/profile:
+    get:
+      description: Recupération des informations de l'utilisateur connecté (transactions , nom, etc.)
+       parameters:
+        - utilisateur connecté grâce au token
+      responses:
+        '200':
+          description: Informations utilisateur récupérés avec succès
+          '400':
+          description: Token / Informations utilisateur invalide
+        '500':
+          description: Erreur serveur
+  /user/profile/:compteID:
+    get:
+      description: Recupération de l'identifiant unique du compte sélectionné
+       parameters:
+        - compteID = identifiant unique du compte
+      responses:
+        '200':
+          description: Informations du tableau des transactions récupérés avec succès
+          '400':
+          description: Informations du compte inexistante
+        '500':
+          description: Erreur serveur
+  /user/profile/:compteID/:transactionID:
+    get:
+      description: Recupération de l'identifiant unique de la transaction du compte sélectionné
+       parameters:
+        - compteID = identifiant unique du compte
+        - transactionID = identifiant unique de la transaction
+      responses:
+        '200':
+          description: Informations de la transaction récupérés
+          '400':
+          description: Informations de la transaction inexistante
+        '500':
+          description: Erreur serveur
+  /user/profile/:compteID/:transactionID:
+    put:
+      description: Ajouter une information sur la transaction sélectionnée
+       parameters:
+        - compteID = identifiant unique du compte
+        - transactionID = identifiant unique de la transaction
+      responses:
+        '200':
+          description: Ajout effectué avec succès
+          '400':
+          description: Erreur lors de l'ajout
+        '500':
+          description: Erreur serveur
+  /user/profile/:compteID/:transactionID:
+    update:
+      description: Modifier une information sur la transaction sélectionnée
+       parameters:
+        - compteID = identifiant unique du compte
+        - transactionID = identifiant unique de la transaction
+      responses:
+        '200':
+          description: Modification effectuée avec succès
+          '400':
+          description: Erreur lors de la modification
+        '500':
+          description: Erreur serveur
+  /user/profile/:compteID/:transactionID:
+    delete:
+      description: Supprimer une information sur la transaction sélectionnée
+       parameters:
+        - compteID = identifiant unique du compte
+        - transactionID = identifiant unique de la transaction
+      responses:
+        '200':
+          description: Suppression effectuée avec succès
+          '400':
+          description: Erreur lors de la supression
+        '500':
+          description: Erreur serveur
 
-#   /accounts/{accountId}/transactions:
-#     get:
-#       tags:
-#         - Transaction Module
-#       summary: Get transactions for an account
-#       description: Retrieve a list of transactions for a given account for the current month
-#       parameters:
-#         - name: accountId
-#           in: path
-#           required: true
-#           type: string
-#           description: The ID of the account
-#       produces:
-#         - application/json
-#       responses:
-#         '200':
-#           description: A list of transactions for the account
-#           schema:
-#             type: array
-#             items:
-#               $ref: '#/definitions/Transaction'
-#         '404':
-#           description: Account not found
-#         '500':
-#           description: Internal Server Error
-
-#   /transactions/{transactionId}:
-#     get:
-#       tags:
-#         - Transaction Module
-#       summary: Get transaction details
-#       description: Retrieve the details of a specific transaction
-#       parameters:
-#         - name: transactionId
-#           in: path
-#           required: true
-#           type: string
-#           description: The ID of the transaction
-#       produces:
-#         - application/json
-#       responses:
-#         '200':
-#           description: Details of the transaction
-#           schema:
-#             $ref: '#/definitions/Transaction'
-#         '404':
-#           description: Transaction not found
-#         '500':
-#           description: Internal Server Error
-
-#     put:
-#       tags:
-#         - Transaction Module
-#       summary: Update transaction details
-#       description: Update the details of a specific transaction
-#       parameters:
-#         - name: transactionId
-#           in: path
-#           required: true
-#           type: string
-#           description: The ID of the transaction
-#         - in: body
-#           name: body
-#           description: Transaction details to be updated
-#           required: true
-#           schema:
-#             $ref: '#/definitions/Transaction'
-#       produces:
-#         - application/json
-#       responses:
-#         '200':
-#           description: Transaction updated successfully
-#           schema:
-#             $ref: '#/definitions/Transaction'
-#         '400':
-#           description: Invalid input
-#         '404':
-#           description: Transaction not found
-#         '500':
-#           description: Internal Server Error
-
-#   /transactions/{transactionId}:
-#     delete:
-#       tags:
-#         - Transaction Module
-#       summary: Delete a transaction
-#       description: Delete a specific transaction
-#       parameters:
-#         - name: transactionId
-#           in: path
-#           required: true
-#           type: string
-#           description: The ID of the transaction
-#       produces:
-#         - application/json
-#       responses:
-#         '200':
-#           description: Transaction deleted successfully
-#         '404':
-#           description: Transaction not found
-#         '500':
-#           description: Internal Server Error
-
-# definitions:
-#   Account:
-#     type: object
-#     properties:
-#       id:
-#         type: string
-#         description: Unique identifier for the account
-#       nom:
-#         type: string
-#         description: Name of the account
-#       montant:
-#         type: number
-#         format: float
-#         description: Balance of the account
-#       transactions:
-#         type: array
-#         items:
-#           $ref: '#/definitions/Transaction'
-
-#   Transaction:
-#     type: object
-#     properties:
-#       date:
-#         type: string
-#         format: date-time
-#         description: Date of the transaction
-#       id:
-#         type: string
-#         description: Unique identifier for the transaction
-#       description:
-#         type: string
-#         description: Description of the transaction
-#       type:
-#         type: string
-#         enum: [virement, cheque, carte, retrait, crédit]
-#         description: Type of the transaction
-#       categorie:
-#         type: string
-#         description: Category of the transaction
-#       montant:
-#         type: number
-#         format: float
-#         description: Amount of the transaction
-# securityDefinitions:
-#   Bearer:
-#     type: apiKey
-#     name: Authorization
-#     in: header
+ 
