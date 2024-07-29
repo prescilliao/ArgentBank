@@ -1,9 +1,9 @@
-swagger: '2.0'
+swagger: "2.0"
 info:
   title: Bank Argent API documentation
   description: Contains all available API endpoints in this codebase
-  version: '1.0.0'
-  termsOfService: 'http://swagger.io/terms/'
+  version: "1.0.0"
+  termsOfService: "http://swagger.io/terms/"
 host: localhost:3001
 basePath: /api/v1
 schemes:
@@ -11,79 +11,132 @@ schemes:
 paths:
   /user/profile:
     get:
-      description: Recupération des informations de l'utilisateur connecté (transactions , nom, etc.)
-       parameters:
-        - utilisateur connecté grâce au token
+      description: Récupération des informations de l'utilisateur connecté (transactions, nom, etc.)
+      parameters:
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
       responses:
-        '200':
-          description: Informations utilisateur récupérés avec succès
-          '400':
+        "200":
+          description: Informations utilisateur récupérées avec succès
+        "400":
           description: Token / Informations utilisateur invalide
-        '500':
+        "500":
           description: Erreur serveur
-  /user/profile/:compteID:
+  /user/profile/{compteID}:
     get:
-      description: Recupération de l'identifiant unique du compte sélectionné
-       parameters:
-        - compteID = identifiant unique du compte
+      description: Récupération de l'identifiant unique du compte sélectionné
+      parameters:
+        - name: compteID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
       responses:
-        '200':
-          description: Informations du tableau des transactions récupérés avec succès
-          '400':
-          description: Informations du compte inexistante
-        '500':
+        "200":
+          description: Informations du tableau des transactions récupérées avec succès
+        "400":
+          description: Informations du compte inexistantes
+        "500":
           description: Erreur serveur
-  /user/profile/:compteID/:transactionID:
+  /user/profile/{compteID}/{transactionID}:
     get:
-      description: Recupération de l'identifiant unique de la transaction du compte sélectionné
-       parameters:
-        - compteID = identifiant unique du compte
-        - transactionID = identifiant unique de la transaction
+      description: Récupération de l'identifiant unique de la transaction du compte sélectionné
+      parameters:
+        - name: compteID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
+        - name: transactionID
+          in: path
+          description: Identifiant unique de la transaction
+          required: true
+          type: string
       responses:
-        '200':
-          description: Informations de la transaction récupérés
-          '400':
-          description: Informations de la transaction inexistante
-        '500':
+        "200":
+          description: Informations de la transaction récupérées
+        "400":
+          description: Informations de la transaction inexistantes
+        "500":
           description: Erreur serveur
-  /user/profile/:compteID/:transactionID:
-    put:
+    post:
       description: Ajouter une information sur la transaction sélectionnée
-       parameters:
-        - compteID = identifiant unique du compte
-        - transactionID = identifiant unique de la transaction
+      parameters:
+        - name: compteID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
+        - name: transactionID
+          in: path
+          description: Identifiant unique de la transaction
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Informations de la transaction à ajouter
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
       responses:
-        '200':
+        "200":
           description: Ajout effectué avec succès
-          '400':
+        "400":
           description: Erreur lors de l'ajout
-        '500':
+        "500":
           description: Erreur serveur
-  /user/profile/:compteID/:transactionID:
-    update:
+    put:
       description: Modifier une information sur la transaction sélectionnée
-       parameters:
-        - compteID = identifiant unique du compte
-        - transactionID = identifiant unique de la transaction
+      parameters:
+        - name: compteID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
+        - name: transactionID
+          in: path
+          description: Identifiant unique de la transaction
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Informations de la transaction à modifier
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
       responses:
-        '200':
+        "200":
           description: Modification effectuée avec succès
-          '400':
+        "400":
           description: Erreur lors de la modification
-        '500':
+        "500":
           description: Erreur serveur
-  /user/profile/:compteID/:transactionID:
     delete:
       description: Supprimer une information sur la transaction sélectionnée
-       parameters:
-        - compteID = identifiant unique du compte
-        - transactionID = identifiant unique de la transaction
+      parameters:
+        - name: compteID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
+        - name: transactionID
+          in: path
+          description: Identifiant unique de la transaction
+          required: true
+          type: string
       responses:
-        '200':
+        "200":
           description: Suppression effectuée avec succès
-          '400':
-          description: Erreur lors de la supression
-        '500':
+        "400":
+          description: Erreur lors de la suppression
+        "500":
           description: Erreur serveur
-
- 
