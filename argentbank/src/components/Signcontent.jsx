@@ -18,7 +18,6 @@ const Signcontent = () => {
     };
 
     React.useEffect(() => {
-
         if (token) {
             dispatch(fetchProfile({ token }));
             navigate("/user");

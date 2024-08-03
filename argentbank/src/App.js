@@ -7,8 +7,10 @@ import Signin from "./pages/Signin";
 import Footer from "./components/Footer";
 import User from "./pages/User";
 import Navbar from "./components/Navbar";
+import { useSelector } from "react-redux";
 
 function App() {
+  const { token, user } = useSelector((state) => state.auth);
   return (
     <>
       <BrowserRouter>
@@ -16,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Signin />} />
-          <Route path="/user" element={<User />} />
+          <Route path="/user" element={token && user ? <User /> : <Home />} />
         </Routes>
         <Footer />
       </BrowserRouter>

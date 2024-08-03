@@ -10,7 +10,7 @@ schemes:
   - http
 paths:
   # Récupérer les comptes pour les afficher
-  /user/compte/:
+  /user/account/:
     get:
       description: Récupération du ou des comptes de l'utilisateur connecté
       parameters:
@@ -36,6 +36,20 @@ paths:
                     name:
                       type: string
                       example: "Compte principal"
+                    transaction:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: virement
+                          date:
+                            type: string
+                            example: 20-02-20
         "401":
           description: Token et/ou informations compte invalide
           schema:
@@ -60,11 +74,16 @@ paths:
                 example: "Une erreur inattendue s'est produite sur le serveur"
 
   # Récupérer les informations d'un compte
-  /user/compte/{compteID}:
+  /user/account/{accountID}:
     get:
       description: Récupération de l'identifiant unique du compte sélectionné
       parameters:
-        - name: compteID
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
           in: path
           description: Identifiant unique du compte
           required: true
@@ -75,18 +94,45 @@ paths:
           schema:
             type: object
             properties:
-              id:
-                type: integer
-                example: 123
-              name:
-                type: string
-                example: "Compte principal"
-              balance:
-                type: number
-                format: float
-                example: 1000.50
+              accounts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 123
+                    name:
+                      type: string
+                      example: "Compte principal"
+                    transaction:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: virement
+                          date:
+                            type: string
+                            example: 20-02-20
+                          amount:
+                            type: string
+                            example: 200
+                          category:
+                            type: string
+                            example: virement
+                          note:
+                            type: string
+                            example: ""
+                          transaction-type:
+                            type: string
+                            example: virement
 
-        "401":
+        "404":
           description: Informations du compte inexistantes
           schema:
             type: object
@@ -109,11 +155,16 @@ paths:
                 type: string
                 example: "Une erreur inattendue s'est produite sur le serveur"
   # Récupérer les informations d'une transaction pour les afficher
-  /user/compte/{compteID}/{transactionID}:
+  /user/account/{accountID}/{transactionID}:
     get:
       description: Récupération de l'identifiant unique de la transaction du compte sélectionné et des informations de la transaction
       parameters:
-        - name: compteID
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
           in: path
           description: Identifiant unique du compte
           required: true
@@ -125,25 +176,36 @@ paths:
           type: string
       responses:
         "200":
-          description: Informations de la transaction récupérées
+          description: Informations du ou des comptes récupérées avec succès
           schema:
             type: object
             properties:
-              id:
-                type: integer
-                example: 789
-              description:
-                type: string
-                example: "Achat chez XYZ"
-              amount:
-                type: number
-                format: float
-                example: 150.75
-              date:
-                type: string
-                format: date
-                example: "2024-08-01"
-        "400":
+              accounts:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      example: 123
+                    name:
+                      type: string
+                      example: "Compte principal"
+                    transaction:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            example: 1
+                          name:
+                            type: string
+                            example: virement
+                          date:
+                            type: string
+                            example: 20-02-20
+        "404":
           description: Informations de la transaction inexistantes
           schema:
             type: object
@@ -166,11 +228,16 @@ paths:
                 type: string
                 example: "Une erreur inattendue s'est produite sur le serveur"
   # Ajouter une note sur une transaction
-  /user/compte/{compteID}/{transactionID}/note:
+  /user/account/{accountID}/{transactionID}/note:
     post:
       description: Ajouter une note sur la transaction sélectionnée
       parameters:
-        - name: compteID
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
           in: path
           description: Identifiant unique du compte
           required: true
@@ -198,14 +265,14 @@ paths:
               note:
                 type: string
                 example: "virement a monsieur X pour achat de xxx"
-        "404":
+        "400":
           description: Erreur lors de l'ajout
           schema:
             type: object
             properties:
               error:
                 type: string
-                example: "Données invalides"
+                example: "Données invalides ou mal structurées"
               message:
                 type: string
                 example: "Erreur lors de l'ajout de la note."
@@ -224,7 +291,12 @@ paths:
     put:
       description: Modifier la note sur la transaction sélectionnée
       parameters:
-        - name: compteID
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
           in: path
           description: Identifiant unique du compte
           required: true
@@ -251,7 +323,7 @@ paths:
             properties:
               note:
                 type: string
-                example: "achat personnel"
+                example: "nouvelle note"
         "404":
           description: Erreur lors de la modification
           schema:
@@ -259,7 +331,7 @@ paths:
             properties:
               error:
                 type: string
-                example: "Données invalides"
+                example: "Données invalides ou mal structurées"
               message:
                 type: string
                 example: "Erreur lors de la modification de la note."
@@ -274,12 +346,135 @@ paths:
               message:
                 type: string
                 example: "Une erreur inattendue s'est produite sur le serveur"
-  # Modifier une catégorie d'une transaction
-  /user/compte/{compteID}/{transactionID}/categorie:
+    #Supprimer une note
+    delete:
+      description: Supprimer la note sur la transaction sélectionnée
+      parameters:
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
+        - name: transactionID
+          in: path
+          description: Identifiant unique de la transaction
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: Supression de la note
+          required: true
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+      responses:
+        "200":
+          description: Supression de la note effectuée avec succès
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+                example: ""
+        "404":
+          description: Erreur lors de la suppression
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Impossible de supprimer la note"
+              message:
+                type: string
+                example: "Erreur lors de la suppression de la note."
+        "500":
+          description: Erreur serveur
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Erreur serveur interne"
+              message:
+                type: string
+                example: "Une erreur inattendue s'est produite sur le serveur"
+  /user/account/{accountID}/{transactionID}/categorie:
+    #Ajouter une catégorie
+    post:
+      description: Ajouter une catégorie sur la transaction sélectionnée
+      parameters:
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
+          in: path
+          description: Identifiant unique du compte
+          required: true
+          type: string
+        - name: transactionID
+          in: path
+          description: Identifiant unique de la transaction
+          required: true
+          type: string
+        - name: body
+          in: body
+          description: nouvelle catéorie ajoutée par l'utilisateur
+          required: true
+          schema:
+            type: object
+            properties:
+              data:
+                type: string
+      responses:
+        "200":
+          description: Ajout de la catégorie effectué avec succès
+          schema:
+            type: object
+            properties:
+              note:
+                type: string
+                example: "nouvelle catégorie"
+        "400":
+          description: Erreur lors de l'ajout
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Données invalides ou mal structurées"
+              message:
+                type: string
+                example: "Erreur lors de l'ajout de la catégorie."
+        "500":
+          description: Erreur serveur
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Erreur serveur interne"
+              message:
+                type: string
+                example: "Une erreur inattendue s'est produite sur le serveur"
+    # Modifier la catégorie de la transaction
     put:
       description: Modifier la catégorie sur la transaction sélectionnée
       parameters:
-        - name: compteID
+        - name: token
+          in: header
+          description: Token d'authentification de l'utilisateur connecté
+          required: true
+          type: string
+        - name: accountID
           in: path
           description: Identifiant unique du compte
           required: true
@@ -306,7 +501,7 @@ paths:
             properties:
               categorie:
                 type: string
-                example: "virement"
+                example: "nouvelle catégorie"
         "400":
           description: Erreur lors de la modification de la catégorie
           schema:
@@ -314,7 +509,7 @@ paths:
             properties:
               error:
                 type: string
-                example: "Données invalides"
+                example: "Données invalides ou mla structurées"
               message:
                 type: string
                 example: "Erreur lors de la modification de la catégorie"
